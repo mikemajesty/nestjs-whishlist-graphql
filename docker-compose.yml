@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+  withlist-mongo-db:
+    container_name: withlist-mongo-db
+    image: mongo
+    restart: always
+    volumes:
+      - withlist-mongo:/data/db
+      - .docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mongo-network-withlist
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=withlist-mongo-db
+    logging:
+      driver: "none"
+
+volumes:
+  withlist-mongo:
+networks:
+  mongo-network-withlist:
+    driver: bridge
