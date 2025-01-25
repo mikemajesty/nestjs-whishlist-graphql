@@ -27,6 +27,7 @@ export class WishlistController {
 
   @Get('/products')
   @ApiResponse(SwaggerResponse.list[200])
+  @ApiResponse(SwaggerResponse.list[404])
   async list(@Req() { body, user }: ApiRequest): Promise<WishlistListOutput> {
     const wishlistExists = await this.repository.findOne({ user: { name: user.name.toUpperCase() } })
     if (wishlistExists) {
@@ -38,6 +39,7 @@ export class WishlistController {
   @Get('/products/:productName/exists')
   @ApiParam({ name: 'productName', required: true, allowEmptyValue: false })
   @ApiResponse(SwaggerResponse.exists[200])
+  @ApiResponse(SwaggerResponse.exists[404])
   async exists(@Req() { params, user }: ApiRequest): Promise<WishlistProductExistsOutput> {
     const wishlistExists = await this.repository.findOne({ user: { name: user.name.toUpperCase() } })
     if (wishlistExists) {
@@ -60,6 +62,9 @@ export class WishlistController {
 
   @Put('/products')
   @ApiResponse(SwaggerResponse.update[200])
+  @ApiResponse(SwaggerResponse.update[422])
+  @ApiResponse(SwaggerResponse.update[404])
+  @ApiResponse(SwaggerResponse.update[409])
   @ApiBody(SwaggerRequest.update)
   async update(@Req() { body, user }: ApiRequest): Promise<WishlistUpdateOutput> {
     const wishlistExists = await this.repository.findOne({ user: { name: user.name.toUpperCase() } })
@@ -71,6 +76,7 @@ export class WishlistController {
 
   @Delete("/products/:productName")
   @ApiResponse(SwaggerResponse.delete[200])
+  @ApiResponse(SwaggerResponse.delete[404])
   @ApiParam({ name: 'productName', required: true, allowEmptyValue: false })
   async delete(@Req() { params, user }: ApiRequest): Promise<WishlistRemoveOutput> {
     const wishlistExists = await this.repository.findOne({ user: { name: user.name.toUpperCase() } })
