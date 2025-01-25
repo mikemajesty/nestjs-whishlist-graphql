@@ -6,7 +6,6 @@ export const DefaultErrorMessage: { [key: string]: string } = {
   408: 'Request Timeout',
   413: 'Payload Too Large',
   414: 'URI Too Long',
-  422: 'Unprocessable Entity',
   428: 'Precondition Required',
   429: 'Too Many Requests',
   500: 'Internal Server Error.',

@@ -4,34 +4,32 @@ import { ValidateSchema } from '@/utils/decorators';
 import { IUsecase } from '@/utils/usecase';
 
 import { ApiNotFoundException } from '@/utils/exceptions/http';
-import { ProductEntity, ProductEntitySchema } from '../entity/product';
+import { ProductEntity } from '../entity/product';
 import { WishlistEntity, WishlistEntitySchema } from '../entity/wishlist';
 import { IWishlistRepository } from '../repository/wishlist';
 
-export const WishlistUpdateInputSchema = WishlistEntitySchema.pick({ user: true }).merge(ProductEntitySchema.pick({ name: true }));
+export const WishlistRemoveInputSchema = WishlistEntitySchema.pick({ user: true }).merge(z.object({ productName: z.string().transform(n => n.toUpperCase()) }));
 
-export class WishlistUpdateUsecase implements IUsecase {
+export class WishlistRemoveUsecase implements IUsecase {
+
   constructor(private readonly repository: IWishlistRepository) {}
 
-  @ValidateSchema(WishlistUpdateInputSchema)
-  async execute(input: WishlistUpdateInput): Promise<WishlistUpdateOutput> {
+  @ValidateSchema(WishlistRemoveInputSchema)
+  async execute(input: WishlistRemoveInput): Promise<WishlistRemoveOutput> {
     const wishlist = await this.repository.findOne({ user: { name: input.user?.name } })
     if (!wishlist) {
       throw new ApiNotFoundException(`wishlist from user: ${input.user?.name} not found.`)
     }
 
     const entity = new WishlistEntity(wishlist)
-
-    entity.addProduct(new ProductEntity({ name: input.name }))
-
-    entity.isMaxLimitProduct()
+    entity.removeProduct(new ProductEntity({ name: input.productName }))
 
     await this.repository.updateOne({ id: wishlist.id }, entity)
 
-    const model = await this.repository.findOneWithExcludeFields({ id: wishlist.id }, ['user']) as WishlistEntity
+    const model = await this.repository.findOneWithExcludeFields({ id: entity.id }, ['user']) as WishlistEntity
     return new WishlistEntity(model)
   }
 }
 
-export type WishlistUpdateInput = z.infer<typeof WishlistUpdateInputSchema>;
-export type WishlistUpdateOutput = Omit<WishlistEntity, 'user'>;
+export type WishlistRemoveInput = z.infer<typeof WishlistRemoveInputSchema>;
+export type WishlistRemoveOutput = Omit<WishlistEntity, 'user'>;

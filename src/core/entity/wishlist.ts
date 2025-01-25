@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { ProductEntity, ProductEntitySchema } from '@/core/entity/product';
 import { UserEntity, UserEntitySchema } from '@/core/entity/user';
 import { BaseEntity } from '@/utils/entity';
-import { ApiConflictException, ApiUnprocessableEntityException } from '@/utils/exceptions/http';
+import { ApiConflictException, ApiNotFoundException, ApiUnprocessableEntityException } from '@/utils/exceptions/http';
 
 const ID = z.string().uuid();
 const User = UserEntitySchema;
@@ -35,7 +35,7 @@ export class WishlistEntity extends BaseEntity<WishlistEntity>() {
 
   products: ProductEntity[] = [];
 
-  addProducts(product: ProductEntity) {
+  addProduct(product: ProductEntity) {
     const productExists = this.products.find(p => p.name === product.name);
     if (productExists) {
       throw new ApiConflictException(`product: ${product.name} already on the list.`)
@@ -43,9 +43,25 @@ export class WishlistEntity extends BaseEntity<WishlistEntity>() {
     this.products.push(new ProductEntity({ name: product.name }))
   }
 
+  removeProduct(product: ProductEntity) {
+    const productExists = this.products.find(p => p.name === product.name);
+    if (!productExists) {
+      throw new ApiNotFoundException(`product: ${product.name} does't exists on wishlist.`)
+    }
+    this.products = this.products.filter(p => p.name !== product.name)
+  }
+
+  existProduct(product: ProductEntity) {
+    const productExists = this.products.find(p => p.name === product.name);
+    if (!productExists) {
+      throw new ApiNotFoundException(`product: ${product.name} does't exists on wishlist.`)
+    }
+    return productExists
+  }
+
   isMaxLimitProduct() {
-    if (this.products.length === WishlistEntity.MAX_PRODUCT_LIMIT) {
-      throw new ApiUnprocessableEntityException(`product max limit id: ${WishlistEntity.MAX_PRODUCT_LIMIT}`)
+    if (this.products.length > WishlistEntity.MAX_PRODUCT_LIMIT) {
+      throw new ApiUnprocessableEntityException(`product max limit is: ${WishlistEntity.MAX_PRODUCT_LIMIT}`)
     }
   }
 

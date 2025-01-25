@@ -17,16 +17,17 @@ export class WishlistCreateUsecase implements IWishlistCreateAdapter {
   @ValidateSchema(WishlistCreateInputSchema)
   async execute(input: WishlistCreateInput): Promise<WishlistCreateOutput> {
     const entity = new WishlistEntity({ id: UUIDUtils.create(), ...input, products: [new ProductEntity({ name: input.product.name })] })
-    entity.isMaxLimitProduct()
 
     const user = new UserEntity(entity.user)
     user.createPassword()
     entity.user = user
 
     await this.repository.create(entity)
+    const model = await this.repository.findOneWithExcludeFields({ id: entity.id }, ['user']) as WishlistEntity
+    return new WishlistEntity(model)
   }
 }
 
 const Output = WishlistCreateInputSchema.omit({ user: true })
 export type WishlistCreateInput = z.infer<typeof Output>;
-export type WishlistCreateOutput = void;
+export type WishlistCreateOutput = Omit<WishlistEntity, 'user'>;
