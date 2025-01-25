@@ -10,14 +10,10 @@ import helmet from 'helmet';
 import { ILoggerAdapter } from '@/infra/logger/adapter';
 import { ISecretsAdapter } from '@/infra/secrets';
 import { ExceptionHandlerFilter } from '@/middlewares/filters/exception-handler.filter';
-import {
-  ExceptionHandlerInterceptor,
-  HttpLoggerInterceptor,
-} from '@/middlewares/interceptors';
 
 import { description, name, version } from '../package.json';
-import { AppModule } from './module';
 import { ErrorType } from './infra/logger';
+import { AppModule } from './module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -31,11 +27,6 @@ async function bootstrap() {
   app.useLogger(loggerService);
 
   app.useGlobalFilters(new ExceptionHandlerFilter(loggerService));
-
-  app.useGlobalInterceptors(
-    new ExceptionHandlerInterceptor(),
-    new HttpLoggerInterceptor(loggerService),
-  );
 
   app.setGlobalPrefix('api', {
     exclude: [

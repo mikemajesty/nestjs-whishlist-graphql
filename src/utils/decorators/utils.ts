@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 import { DateUtils } from '@/utils/date';
-import { ApiBadRequestException } from '@/utils/exception';
+import { ApiBadRequestException } from '@/utils/exceptions/http';
 import { MongoUtils } from '@/utils/mongoose';
 
 import { AllowedFilter } from './types';

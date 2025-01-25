@@ -1,4 +1,4 @@
-import { ApiBadRequestException } from './exception';
+import { ApiBadRequestException } from './exceptions/http';
 
 export class CollectionUtil {
   static groupBy = <T>(collection: unknown[] = [], key: string): { [key: string]: T[] } => {

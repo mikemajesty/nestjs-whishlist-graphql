@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 
-import { UserEntitySchema } from '@/core/user/entity/user';
+import { UserEntitySchema } from '@/core/entity/user';
 import { ISecretsAdapter } from '@/infra/secrets';
-import { ApiUnauthorizedException } from '@/utils/exception';
+import { ApiUnauthorizedException } from '@/utils/exceptions/http';
 
 import { ITokenAdapter } from './adapter';
 
 export const TokenGetSchema = UserEntitySchema.pick({
-  email: true,
+  name: true,
   password: true
 });
 

@@ -1,4 +1,4 @@
-import { UserEntity } from '@/core/user/entity/user';
+import { UserEntity } from '@/core/entity/user';
 import { z } from 'zod';
 
 type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false;
@@ -13,4 +13,22 @@ export type ZodInferSchema<T extends object> = {
   : z.ZodType<T[Key]> | z.ZodPipeline<z.ZodType<unknown>, z.ZodType<T[Key]>>;
 };
 
-export type UserRequest = Pick<UserEntity, 'email' | 'name' | 'id'>;
+export type UserRequest = Pick<UserEntity, 'name' | 'id'>;
+
+export interface ApiRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly body: any;
+  readonly user: UserRequest;
+  readonly params: { [key: string]: string | number };
+  readonly query: { [key: string]: string | number };
+  readonly headers: Headers & { authorization: string };
+  readonly url: string;
+  readonly files: {
+    buffer: Buffer;
+    encoding: string;
+    fieldname: string;
+    mimetype: string;
+    originalname: string;
+    size: number;
+  }[];
+}

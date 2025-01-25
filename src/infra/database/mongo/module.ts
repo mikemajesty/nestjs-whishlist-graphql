@@ -5,7 +5,7 @@ import { Connection } from 'mongoose';
 
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
 import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
-import { ApiInternalServerException } from '@/utils/exception';
+import { ApiInternalServerException } from '@/utils/exceptions/http';
 
 import { name } from '../../../../package.json';
 import { ConnectionName } from '../enum';
@@ -14,7 +14,7 @@ import { MongoService } from './service';
 @Module({
   imports: [
     MongooseModule.forRootAsync({
-      connectionName: ConnectionName.CATS,
+      connectionName: ConnectionName.WHITELIST,
       useFactory: ({ MONGO: { MONGO_URL } }: ISecretsAdapter, logger: ILoggerAdapter) => {
         const connection = new MongoService().getConnection({ URI: MONGO_URL });
         return {

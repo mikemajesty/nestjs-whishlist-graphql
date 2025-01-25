@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ApiBadRequestException } from '@/utils/exception';
+import { ApiBadRequestException } from '@/utils/exceptions/http';
 import { PaginationSchema } from '@/utils/pagination';
 import { SearchSchema } from '@/utils/search';
 import { SortEnum, SortSchema } from '@/utils/sort';

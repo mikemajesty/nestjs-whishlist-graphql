@@ -1,3 +1,3 @@
 export enum ConnectionName {
-  CATS = `CATS_CONNECTION`
+  WHITELIST = `WHITELIST_CONNECTION`
 }

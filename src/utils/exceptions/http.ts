@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class BaseException extends HttpException {
+export class HttpBaseException extends HttpException {
   traceid!: string;
   readonly context!: string;
   readonly statusCode: number;
@@ -21,49 +21,56 @@ export class BaseException extends HttpException {
   }
 }
 
-export class ApiInternalServerException extends BaseException {
+export class ApiInternalServerException extends HttpBaseException {
   static STATUS = HttpStatus.INTERNAL_SERVER_ERROR;
   constructor(message?: MessageType, parameters?: ParametersType) {
     super(message ?? ApiInternalServerException.name, ApiInternalServerException.STATUS, parameters);
   }
 }
 
-export class ApiNotFoundException extends BaseException {
+export class ApiNotFoundException extends HttpBaseException {
   static STATUS = HttpStatus.NOT_FOUND;
   constructor(message?: MessageType, parameters?: ParametersType) {
     super(message ?? ApiNotFoundException.name, ApiNotFoundException.STATUS, parameters);
   }
 }
 
-export class ApiConflictException extends BaseException {
+export class ApiConflictException extends HttpBaseException {
   static STATUS = HttpStatus.CONFLICT;
   constructor(message?: MessageType, parameters?: ParametersType) {
     super(message ?? ApiConflictException.name, ApiConflictException.STATUS, parameters);
   }
 }
 
-export class ApiUnauthorizedException extends BaseException {
+export class ApiUnauthorizedException extends HttpBaseException {
   static STATUS = HttpStatus.UNAUTHORIZED;
   constructor(message?: MessageType, parameters?: ParametersType) {
     super(message ?? ApiUnauthorizedException.name, ApiUnauthorizedException.STATUS, parameters);
   }
 }
 
-export class ApiBadRequestException extends BaseException {
+export class ApiBadRequestException extends HttpBaseException {
   static STATUS = HttpStatus.BAD_REQUEST;
   constructor(message?: MessageType, parameters?: ParametersType) {
     super(message ?? ApiBadRequestException.name, ApiBadRequestException.STATUS, parameters);
   }
 }
 
-export class ApiForbiddenException extends BaseException {
+export class ApiUnprocessableEntityException extends HttpBaseException {
+  static STATUS = HttpStatus.UNPROCESSABLE_ENTITY;
+  constructor(message?: MessageType, parameters?: ParametersType) {
+    super(message ?? ApiUnprocessableEntityException.name, ApiUnprocessableEntityException.STATUS, parameters);
+  }
+}
+
+export class ApiForbiddenException extends HttpBaseException {
   static STATUS = HttpStatus.FORBIDDEN;
   constructor(message?: MessageType, parameters?: ParametersType) {
     super(message ?? ApiForbiddenException.name, ApiForbiddenException.STATUS, parameters);
   }
 }
 
-export class ApiTimeoutException extends BaseException {
+export class ApiTimeoutException extends HttpBaseException {
   static STATUS = HttpStatus.REQUEST_TIMEOUT;
   constructor(message?: MessageType, parameters?: ParametersType) {
     super(message ?? ApiTimeoutException.name, ApiTimeoutException.STATUS, parameters);

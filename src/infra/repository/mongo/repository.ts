@@ -14,7 +14,7 @@ import {
 
 import { ConvertMongoFilterToBaseRepository } from '@/utils/decorators';
 import { IEntity } from '@/utils/entity';
-import { ApiBadRequestException } from '@/utils/exception';
+import { ApiBadRequestException } from '@/utils/exceptions/http';
 
 import { IRepository } from '../adapter';
 import { CreatedModel, CreatedOrUpdateModel, DatabaseOperationCommand, RemovedModel, UpdatedModel } from '../types';

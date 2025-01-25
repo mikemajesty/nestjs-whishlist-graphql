@@ -1,41 +1,43 @@
-import { ArgumentsHost, Catch, ExceptionFilter as AppExceptionFilter, HttpException } from '@nestjs/common';
+import { ExceptionFilter as AppExceptionFilter, ArgumentsHost, Catch, HttpException } from '@nestjs/common';
 import { ZodError, ZodIssue, ZodUnrecognizedKeysIssue } from 'zod';
 
 import { ILoggerAdapter } from '@/infra/logger/adapter';
 import { DateUtils } from '@/utils/date';
-import { ApiBadRequestException, ApiErrorType, ApiInternalServerException, BaseException } from '@/utils/exception';
+import { ApiBadRequestException, ApiErrorType, ApiInternalServerException, HttpBaseException } from '@/utils/exceptions/http';
 import { DefaultErrorMessage } from '@/utils/http-status';
 
 @Catch()
 export class ExceptionHandlerFilter implements AppExceptionFilter {
   constructor(private readonly loggerService: ILoggerAdapter) {}
 
-  catch(exception: BaseException, host: ArgumentsHost): void {
+  catch(exception: HttpBaseException, host: ArgumentsHost): void {
     const context = host.switchToHttp();
-    const response = context.getResponse();
-    const request = context.getRequest<Request>();
+    if (host.getType() === 'http') {
+      const response = context.getResponse();
+      const request = context.getRequest<Request>();
 
-    const status = this.getStatus(exception);
+      const status = this.getStatus(exception);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    exception.traceid = [exception.traceid, (request as any)['id']].find(Boolean);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      exception.traceid = [exception.traceid, (request as any)['id']].find(Boolean);
 
-    this.loggerService.error(exception, exception.message);
-    const message = this.getMessage(exception, status as number);
+      this.loggerService.error(exception, exception.message);
+      const message = this.getMessage(exception, status as number);
 
-    response.status(status).json({
-      error: {
-        code: status,
-        traceid: exception.traceid,
-        context: exception.context ?? exception?.parameters?.context,
-        message,
-        timestamp: DateUtils.getDateStringWithFormat(),
-        path: request.url
-      }
-    } as ApiErrorType);
+      return response.status(status).json({
+        error: {
+          code: status,
+          traceid: exception.traceid,
+          context: exception.context ?? exception?.parameters?.context,
+          message,
+          timestamp: DateUtils.getDateStringWithFormat(),
+          path: request.url
+        }
+      } as ApiErrorType);
+    }
   }
 
-  private getMessage(exception: BaseException, status: string | number): string[] {
+  private getMessage(exception: HttpBaseException, status: string | number): string[] {
     const defaultError = DefaultErrorMessage[String(status)];
     if (defaultError) {
       return [defaultError];
@@ -61,7 +63,7 @@ export class ExceptionHandlerFilter implements AppExceptionFilter {
     return [exception.message];
   }
 
-  private getStatus(exception: BaseException) {
+  private getStatus(exception: HttpBaseException) {
     if (exception instanceof ZodError) {
       return ApiBadRequestException.STATUS;
     }

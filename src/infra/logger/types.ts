@@ -1,4 +1,4 @@
-import { BaseException } from '@/utils/exception';
+import { HttpBaseException } from '@/utils/exceptions/http';
 
 export type MessageType = {
   message: string;
@@ -6,7 +6,7 @@ export type MessageType = {
   obj?: object;
 };
 
-export type ErrorType = Error & BaseException;
+export type ErrorType = Error & HttpBaseException;
 
 export enum LogLevelEnum {
   fatal = 'fatal',

@@ -3,25 +3,36 @@ import { Observable } from 'rxjs';
 
 import { ILoggerAdapter } from '@/infra/logger';
 import { UUIDUtils } from '@/utils/uuid';
+import { GqlContextType, GqlExecutionContext } from '@nestjs/graphql';
+import { Response } from 'express';
 
 @Injectable()
 export class HttpLoggerInterceptor implements NestInterceptor {
   constructor(private readonly logger: ILoggerAdapter) {}
 
   intercept(executionContext: ExecutionContext, next: CallHandler): Observable<unknown> {
-    const context = `${executionContext.getClass().name}/${executionContext.getHandler().name}`;
+    if (executionContext.getType() === 'http') {
+      const context = `${executionContext.getClass().name}/${executionContext.getHandler().name}`;
 
-    const request = executionContext.switchToHttp().getRequest();
+      const request = executionContext.switchToHttp().getRequest();
 
-    request['context'] = context;
+      request['context'] = context;
 
-    if (!request.headers?.traceid) {
-      request.headers.traceid = UUIDUtils.create();
-      request.id = request.headers.traceid;
+      if (!request.headers?.traceid) {
+        request.headers.traceid = UUIDUtils.create();
+        request.id = request.headers.traceid;
+      }
+      this.logger.setGlobalParameters({ traceid: request.id });
     }
 
-    this.logger.setGlobalParameters({ traceid: request.id });
+    if (executionContext.getType<GqlContextType>() === 'graphql') {
+      const gqlContext = GqlExecutionContext.create(executionContext);
+      const res: Response = gqlContext.getContext().res;
+      const requestId = UUIDUtils.create()
 
-    return next.handle();
+      res.set('requestId', requestId);
+      this.logger.setGlobalParameters({ traceid: requestId });
+    }
+    return next.handle()
   }
 }

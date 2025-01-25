@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { z, ZodError, ZodIssue } from 'zod';
 
-import { ApiInternalServerException } from '@/utils/exception';
+import { ApiInternalServerException } from '@/utils/exceptions/http';
 import { ZodInferSchema } from '@/utils/types';
 
 import { LogLevelEnum } from '../logger';

@@ -6,7 +6,7 @@ import { ITokenAdapter } from '@/libs/token';
 import { UserRequest } from '@/utils/types';
 import { UUIDUtils } from '@/utils/uuid';
 
-import { ApiUnauthorizedException } from '../../utils/exception';
+import { ApiUnauthorizedException } from '../../utils/exceptions/http';
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {

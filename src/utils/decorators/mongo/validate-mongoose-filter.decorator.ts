@@ -1,7 +1,7 @@
 import { FilterQuery } from 'mongoose';
 
 import { IEntity } from '@/utils/entity';
-import { ApiBadRequestException } from '@/utils/exception';
+import { ApiBadRequestException } from '@/utils/exceptions/http';
 import { MongoUtils } from '@/utils/mongoose';
 
 import { AllowedFilter, SearchTypeEnum } from '../types';

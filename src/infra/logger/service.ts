@@ -7,7 +7,7 @@ import { HttpLogger, Options, pinoHttp } from 'pino-http';
 import pinoPretty, { PrettyOptions } from 'pino-pretty';
 
 import { DateUtils } from '@/utils/date';
-import { ApiBadRequestException, BaseException } from '@/utils/exception';
+import { ApiBadRequestException, HttpBaseException } from '@/utils/exceptions/http';
 import { UUIDUtils } from '@/utils/uuid';
 
 import { ILoggerAdapter } from './adapter';
@@ -65,12 +65,12 @@ export class LoggerService implements ILoggerAdapter {
     const errorResponse = this.getErrorResponse(error);
 
     const response =
-      error instanceof BaseException
+      error instanceof HttpBaseException
         ? { statusCode: error.statusCode, message: error?.message, ...error?.parameters }
         : errorResponse?.value();
 
     const type = {
-      Error: BaseException.name
+      Error: HttpBaseException.name
     }[error?.name];
 
     const messages = [message, response?.message, error.message].find(Boolean);
@@ -100,7 +100,7 @@ export class LoggerService implements ILoggerAdapter {
     const messages = [error.message, message].find(Boolean);
 
     const type = {
-      Error: BaseException.name
+      Error: HttpBaseException.name
     }[error?.name];
     const typeError = [type, error?.name === 'ZodError' ? ApiBadRequestException.name : error?.name].find(Boolean);
 
@@ -210,7 +210,7 @@ export class LoggerService implements ILoggerAdapter {
       {
         conditional: isFunction && typeof error.getResponse() === 'string',
         value: () =>
-          new BaseException(
+          new HttpBaseException(
             error.getResponse() as string,
             [error.getStatus(), error['status']].find(Boolean)
           ).getResponse()
