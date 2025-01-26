@@ -118,12 +118,153 @@ Durante o desenvolvimento, tomei decisões intencionais para facilitar os testes
   * **core**: A camada reponsavel pelas orquestração e aplicação das regras de negócio 
     * **core => entity**: Camada responsavel por executar regras de negocio associada com aos seus respectivos campos.
     * **core => repository**: Camada responsavel por abstrair a implementação do repositorio
-    * **core => use-cases**: Camada responsavel por orquestrar as regras de negocio e as regas da aplicação.
+    * **core => use-cases**: Camada responsavel por orquestrar as regras de negocio e as regras da aplicação.
   ---
-  * **modules**: Aqui tem uma pequena diferença com a arquitetura Clean Architeture, pois eu gosto de aproveitar o poder que o Nestjs tem, vou listar abaixo alguns detalhes
-    * **modules => adapters**: Adaptadores responsaveis por abstrair a implementação afim de se comunicar com o use-cases
+  * **modules**: Aqui tem uma pequena diferença com a arquitetura Clean Architeture, pois eu gosto de aproveitar o poder que o Nestjs tem de modularização, vou listar abaixo alguns detalhes
+    * **modules => adapters**: Adaptadores responsaveis por abstrair a implementação dos use cases, afim de se comunicar com o controller
     * **modules => controler**: Controlador HTTP padrão
     * **modules => module**: Modulador do Nestjs
     * **modules => repository**: Implementação do repositorio
     * **modules => resolver**: Controlador Graphql
     * **modules => swagger**: Documentação do Swagger
+
+-- Skeleton
+
+```
+.
+├── docker-compose.yml
+├── Dockerfile
+├── jest.config.ts
+├── nest-cli.json
+├── package.json
+├── README.md
+├── schema.gql
+├── src
+│   ├── core
+│   │   ├── entity
+│   │   │   ├── product.ts
+│   │   │   ├── user.ts
+│   │   │   └── wishlist.ts
+│   │   ├── repository
+│   │   │   └── wishlist.ts
+│   │   └── use-cases
+│   │       ├── __tests__
+│   │       │   ├── wishlist-create.spec.ts
+│   │       │   ├── wishlist-list.spec.ts
+│   │       │   ├── wishlist-product-exists.spec.ts
+│   │       │   ├── wishlist-remove.spec.ts
+│   │       │   └── wishlist-update.spec.ts
+│   │       ├── wishlist-create.ts
+│   │       ├── wishlist-list.ts
+│   │       ├── wishlist-product-exists.ts
+│   │       ├── wishlist-remove.ts
+│   │       └── wishlist-update.ts
+│   ├── infra
+│   │   ├── database
+│   │   │   ├── adapter.ts
+│   │   │   ├── enum.ts
+│   │   │   ├── index.ts
+│   │   │   ├── mongo
+│   │   │   │   ├── config.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── migrations
+│   │   │   │   ├── module.ts
+│   │   │   │   ├── schemas
+│   │   │   │   │   ├── product.ts
+│   │   │   │   │   ├── user.ts
+│   │   │   │   │   └── wishlist.ts
+│   │   │   │   └── service.ts
+│   │   │   └── types.ts
+│   │   ├── graphql
+│   │   │   └── module.ts
+│   │   ├── logger
+│   │   │   ├── adapter.ts
+│   │   │   ├── index.ts
+│   │   │   ├── module.ts
+│   │   │   ├── service.ts
+│   │   │   └── types.ts
+│   │   ├── module.ts
+│   │   ├── repository
+│   │   │   ├── adapter.ts
+│   │   │   ├── index.ts
+│   │   │   ├── mongo
+│   │   │   │   └── repository.ts
+│   │   │   ├── types.ts
+│   │   │   └── util.ts
+│   │   └── secrets
+│   │       ├── adapter.ts
+│   │       ├── index.ts
+│   │       ├── module.ts
+│   │       ├── service.ts
+│   │       └── types.ts
+│   ├── libs
+│   │   ├── module.ts
+│   │   └── token
+│   │       ├── adapter.ts
+│   │       ├── index.ts
+│   │       ├── module.ts
+│   │       └── service.ts
+│   ├── main.ts
+│   ├── middlewares
+│   │   ├── filters
+│   │   │   ├── exception-handler.filter.ts
+│   │   │   └── index.ts
+│   │   ├── interceptors
+│   │   │   ├── exception-handler.interceptor.ts
+│   │   │   ├── http-logger.interceptor.ts
+│   │   │   └── index.ts
+│   │   └── middlewares
+│   │       ├── authentication.middleware.ts
+│   │       ├── graphql.middleware.ts
+│   │       └── index.ts
+│   ├── modules
+│   │   ├── health
+│   │   │   ├── controller.ts
+│   │   │   └── module.ts
+│   │   └── wishlist
+│   │       ├── adapter.ts
+│   │       ├── controller.ts
+│   │       ├── module.ts
+│   │       ├── repository.ts
+│   │       ├── resolver.ts
+│   │       └── swagger.ts
+│   ├── module.ts
+│   └── utils
+│       ├── collection.ts
+│       ├── crypto.ts
+│       ├── date.ts
+│       ├── decorators
+│       │   ├── index.ts
+│       │   ├── mongo
+│       │   │   ├── convert-mongoose-filter.decorator.ts
+│       │   │   └── validate-mongoose-filter.decorator.ts
+│       │   ├── types.ts
+│       │   ├── utils.ts
+│       │   ├── validate-database-sort-allowed.decorator.ts
+│       │   └── validate-schema.decorator.ts
+│       ├── entity.ts
+│       ├── exceptions
+│       │   ├── graphql.ts
+│       │   └── http.ts
+│       ├── http-status.ts
+│       ├── mongoose.ts
+│       ├── pagination.ts
+│       ├── search.ts
+│       ├── sort.ts
+│       ├── swagger.ts
+│       ├── tests.ts
+│       ├── types.ts
+│       ├── usecase.ts
+│       └── uuid.ts
+├── tsconfig.build.json
+└── tsconfig.json
+```
+
+The following is a list of all the people that have contributed Nestjs monorepo boilerplate. Thanks for your contributions!
+
+[<img alt="mikemajesty" src="https://avatars1.githubusercontent.com/u/11630212?s=460&v=4&s=117" width="117">](https://github.com/mikemajesty)
+
+## License
+
+It is available under the MIT license.
+[License](https://opensource.org/licenses/mit-license.php)
