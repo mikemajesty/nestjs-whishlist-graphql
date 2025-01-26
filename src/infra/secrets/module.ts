@@ -13,8 +13,8 @@ import { EnvEnum } from './types';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env']
-    })
+      envFilePath: ['.env'],
+    }),
   ],
   providers: [
     {
@@ -38,7 +38,7 @@ import { EnvEnum } from './types';
             .or(z.string())
             .transform((p) => Number(p)),
           TOKEN_EXPIRATION: z.string().or(z.number()),
-          REFRESH_TOKEN_EXPIRATION: z.string().or(z.number())
+          REFRESH_TOKEN_EXPIRATION: z.string().or(z.number()),
         });
         const secret = new SecretsService(config);
 
@@ -47,16 +47,19 @@ import { EnvEnum } from './types';
         } catch (error) {
           const zodError = error as ZodError;
           const message = zodError.issues
-            .map((i: ZodIssue) => `${SecretsService.name}.${i.path.join('.')}: ${i.message}`)
+            .map(
+              (i: ZodIssue) =>
+                `${SecretsService.name}.${i.path.join('.')}: ${i.message}`,
+            )
             .join(',');
           throw new ApiInternalServerException(message);
         }
 
         return SecretsSchema.parse(secret);
       },
-      inject: [ConfigService]
-    }
+      inject: [ConfigService],
+    },
   ],
-  exports: [ISecretsAdapter]
+  exports: [ISecretsAdapter],
 })
 export class SecretsModule {}

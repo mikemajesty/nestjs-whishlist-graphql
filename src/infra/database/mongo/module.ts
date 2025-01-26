@@ -15,7 +15,10 @@ import { MongoService } from './service';
   imports: [
     MongooseModule.forRootAsync({
       connectionName: ConnectionName.WHITELIST,
-      useFactory: ({ MONGO: { MONGO_URL } }: ISecretsAdapter, logger: ILoggerAdapter) => {
+      useFactory: (
+        { MONGO: { MONGO_URL } }: ISecretsAdapter,
+        logger: ILoggerAdapter,
+      ) => {
         const connection = new MongoService().getConnection({ URI: MONGO_URL });
         return {
           connectionFactory: (connection: Connection) => {
@@ -23,24 +26,30 @@ import { MongoService } from './service';
               logger.log('🎯 mongo connected successfully!');
             }
             connection.on('disconnected', () => {
-              logger.fatal(new ApiInternalServerException('mongo disconnected!'));
+              logger.fatal(
+                new ApiInternalServerException('mongo disconnected!'),
+              );
             });
             connection.on('reconnected', () => {
               logger.log(red('mongo reconnected!\n'));
             });
             connection.on('error', (error) => {
-              logger.fatal(new ApiInternalServerException(error.message || error, { context: 'MongoConnection' }));
+              logger.fatal(
+                new ApiInternalServerException(error.message || error, {
+                  context: 'MongoConnection',
+                }),
+              );
             });
 
             return connection;
           },
           uri: connection.uri,
-          appName: name
+          appName: name,
         };
       },
       inject: [ISecretsAdapter, ILoggerAdapter],
-      imports: [SecretsModule, LoggerModule]
-    })
-  ]
+      imports: [SecretsModule, LoggerModule],
+    }),
+  ],
 })
 export class MongoDatabaseModule {}

@@ -15,5 +15,5 @@ export enum LogLevelEnum {
   info = 'info',
   debug = 'debug',
   trace = 'trace',
-  silent = 'silent'
+  silent = 'silent',
 }

@@ -6,14 +6,14 @@ export class Product {
   name?: string;
 
   @Field({ nullable: true })
-  description?: string
+  description?: string;
 
   @Field(() => Number, { nullable: true })
-  price?: number
+  price?: number;
 
   @Field(() => Number, { nullable: true })
-  stock?: number
+  stock?: number;
 
   @Field({ nullable: true })
-  partner?: string
+  partner?: string;
 }

@@ -6,7 +6,9 @@ import { MongoUtils } from '@/utils/mongoose';
 
 import { AllowedFilter } from './types';
 
-export const convertFilterValue = (input: Pick<AllowedFilter<unknown>, 'format'> & { value: unknown }) => {
+export const convertFilterValue = (
+  input: Pick<AllowedFilter<unknown>, 'format'> & { value: unknown },
+) => {
   if (input.format === 'String') {
     return `${input.value}`;
   }

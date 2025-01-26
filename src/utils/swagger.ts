@@ -10,7 +10,7 @@ export const Swagger = {
     status,
     route,
     message,
-    description
+    description,
   }: SwaggerErrorInput): ApiResponseOptions {
     return {
       schema: {
@@ -19,53 +19,57 @@ export const Swagger = {
             code: status,
             traceid: '<traceId>',
             context: '<context>',
-            message: [[DefaultErrorMessage[String(status)], message].find(Boolean)],
+            message: [
+              [DefaultErrorMessage[String(status)], message].find(Boolean),
+            ],
             timestamp: '<timestamp>',
-            path: route
-          }
-        } as T
+            path: route,
+          },
+        } as T,
       },
       description,
-      status
+      status,
     };
   },
-  defaultPaginateExceptions(input: PaginateExceptionsInput): ApiResponseOptions {
+  defaultPaginateExceptions(
+    input: PaginateExceptionsInput,
+  ): ApiResponseOptions {
     const messages = {
       'filter exception': {
         description: 'when filter key not allowed',
-        value: [`filter key1 not allowed, allowed list: key2,key3`]
+        value: [`filter key1 not allowed, allowed list: key2,key3`],
       },
       'sort exception': {
         description: 'when sort key not allowed',
-        value: [`sort key1 not allowed, allowed list: key2,key3`]
+        value: [`sort key1 not allowed, allowed list: key2,key3`],
       },
       'invalid boolean filter': {
         description: 'when boolean filter is invalid',
-        value: ['invalid boolean filter']
+        value: ['invalid boolean filter'],
       },
       'invalid number filter': {
         description: 'when number filter is invalid',
-        value: ['invalid number filter']
+        value: ['invalid number filter'],
       },
       'invalid objectId filter': {
         description: 'when objectId filter is invalid',
-        value: ['invalid objectId filter']
+        value: ['invalid objectId filter'],
       },
-      ...input?.additionalMessages
+      ...input?.additionalMessages,
     };
 
     return this.defaultResponseWithMultiplesError({
       messages,
       status: 400,
       description: input?.message ?? 'paginate filter and sort exceptions.',
-      route: input.url
+      route: input.url,
     });
   },
   defaultResponseWithMultiplesError({
     status,
     route,
     messages,
-    description
+    description,
   }: MultiplesExceptionResponse): ApiResponseOptions {
     const examples: { [key: string]: unknown } = {};
     for (const key in messages) {
@@ -77,58 +81,66 @@ export const Swagger = {
             context: '<context>',
             message: messages[`${key}`].value,
             timestamp: '<timestamp>',
-            path: route
-          }
+            path: route,
+          },
         } as ApiErrorType,
-        description: messages[`${key}`].description
+        description: messages[`${key}`].description,
       };
     }
     return {
       content: {
         'application/json': {
-          examples: examples as ExamplesObject
-        }
+          examples: examples as ExamplesObject,
+        },
       },
       description,
-      status
+      status,
     };
   },
 
-  defaultResponseText({ status, text, description }: SwaggerText): ApiResponseOptions {
+  defaultResponseText({
+    status,
+    text,
+    description,
+  }: SwaggerText): ApiResponseOptions {
     return {
       content: {
         'text/plain': {
           schema: {
-            example: text
-          }
-        }
+            example: text,
+          },
+        },
       },
       description,
-      status
+      status,
     };
   },
 
-  defaultResponseJSON<T = void>({ status, json, description }: SwaggerJSON<NoInfer<T>>): ApiResponseOptions {
+  defaultResponseJSON<T = void>({
+    status,
+    json,
+    description,
+  }: SwaggerJSON<NoInfer<T>>): ApiResponseOptions {
     return {
       content: json
         ? {
-          'application/json': {
-            schema: {
-              example: json as NoInfer<T>
-            }
+            'application/json': {
+              schema: {
+                example: json as NoInfer<T>,
+              },
+            },
           }
-        }
         : undefined,
       description,
-      status
+      status,
     };
   },
 
   defaultRequestJSON<T = void>(json: NoInfer<T>): ApiResponseOptions {
     return {
       schema: {
-        example: json as NoInfer<T>
-      }
+        example: json as NoInfer<T>,
+      },
     };
   },
 
@@ -139,19 +151,27 @@ export const Swagger = {
   } {
     return {
       pagination: {
-        limit: Swagger.defaultApiQueryOptions({ example: 10, name: 'limit', required: false }),
-        page: Swagger.defaultApiQueryOptions({ example: 1, name: 'page', required: false })
+        limit: Swagger.defaultApiQueryOptions({
+          example: 10,
+          name: 'limit',
+          required: false,
+        }),
+        page: Swagger.defaultApiQueryOptions({
+          example: 1,
+          name: 'page',
+          required: false,
+        }),
       },
       sort: Swagger.defaultApiQueryOptions({
         name: 'sort',
         required: false,
-        description: `<b> sort with multiples key</b>: propertyName1:desc,propertyName2:asc`
+        description: `<b> sort with multiples key</b>: propertyName1:desc,propertyName2:asc`,
       }),
       search: Swagger.defaultApiQueryOptions({
         name: 'search',
         required: false,
-        description: `<b> search with multiples keys</b>: propertyName1:value,propertyName2:value <br> <b>search with multiples values</b>: propertyName1:value1|value2`
-      })
+        description: `<b> search with multiples keys</b>: propertyName1:value,propertyName2:value <br> <b>search with multiples values</b>: propertyName1:value1|value2`,
+      }),
     };
   },
 
@@ -159,7 +179,7 @@ export const Swagger = {
     example,
     required,
     description,
-    name
+    name,
   }: ApiQueryOptions & { name: string }): ApiQueryOptions {
     return {
       schema: { example },
@@ -167,9 +187,9 @@ export const Swagger = {
       description,
       name,
       explode: true,
-      type: 'string'
+      type: 'string',
     };
-  }
+  },
 };
 
 type PaginateExceptionsInput = {
@@ -206,4 +226,6 @@ type MessagesOutput = {
 
 type NoInfer<T> = [T][T extends unknown ? 0 : never];
 
-type MultiplesExceptionResponse = Omit<SwaggerErrorInput, 'message'> & { messages: MessagesOutput };
+type MultiplesExceptionResponse = Omit<SwaggerErrorInput, 'message'> & {
+  messages: MessagesOutput;
+};

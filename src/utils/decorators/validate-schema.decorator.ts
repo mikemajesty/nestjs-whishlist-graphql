@@ -1,12 +1,16 @@
 import { Schema, ZodError, ZodIssue } from 'zod';
 
 export function ValidateSchema(...schema: Schema[]) {
-  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) => {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: unknown[]) {
       const validatorError: { error?: ZodError | null; issues: ZodIssue[] } = {
         issues: [],
-        error: null
+        error: null,
       };
 
       for (const [index, value] of schema.entries()) {
@@ -15,7 +19,9 @@ export function ValidateSchema(...schema: Schema[]) {
           args[`${index}`] = model;
         } catch (error) {
           Object.assign(validatorError, { error });
-          validatorError.issues.push(...(validatorError.error as ZodError).issues);
+          validatorError.issues.push(
+            ...(validatorError.error as ZodError).issues,
+          );
         }
       }
 

@@ -10,7 +10,7 @@ import { ITokenAdapter } from './adapter';
 
 export const TokenGetSchema = UserEntitySchema.pick({
   name: true,
-  password: true
+  password: true,
 });
 
 @Injectable()
@@ -21,7 +21,7 @@ export class TokenService implements ITokenAdapter {
     const token = jwt.sign(
       model,
       this.secret.JWT_SECRET_KEY,
-      options ?? { expiresIn: Number(this.secret.TOKEN_EXPIRATION) }
+      options ?? { expiresIn: Number(this.secret.TOKEN_EXPIRATION) },
     );
 
     return { token };

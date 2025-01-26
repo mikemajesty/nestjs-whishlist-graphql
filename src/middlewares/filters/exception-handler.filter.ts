@@ -1,9 +1,19 @@
-import { ExceptionFilter as AppExceptionFilter, ArgumentsHost, Catch, HttpException } from '@nestjs/common';
+import {
+  ExceptionFilter as AppExceptionFilter,
+  ArgumentsHost,
+  Catch,
+  HttpException,
+} from '@nestjs/common';
 import { ZodError, ZodIssue, ZodUnrecognizedKeysIssue } from 'zod';
 
 import { ILoggerAdapter } from '@/infra/logger/adapter';
 import { DateUtils } from '@/utils/date';
-import { ApiBadRequestException, ApiErrorType, ApiInternalServerException, HttpBaseException } from '@/utils/exceptions/http';
+import {
+  ApiBadRequestException,
+  ApiErrorType,
+  ApiInternalServerException,
+  HttpBaseException,
+} from '@/utils/exceptions/http';
 import { DefaultErrorMessage } from '@/utils/http-status';
 
 @Catch()
@@ -19,7 +29,9 @@ export class ExceptionHandlerFilter implements AppExceptionFilter {
       const status = this.getStatus(exception);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      exception.traceid = [exception.traceid, (request as any)['id']].find(Boolean);
+      exception.traceid = [exception.traceid, (request as any)['id']].find(
+        Boolean,
+      );
 
       this.loggerService.error(exception, exception.message);
       const message = this.getMessage(exception, status as number);
@@ -31,13 +43,16 @@ export class ExceptionHandlerFilter implements AppExceptionFilter {
           context: exception.context ?? exception?.parameters?.context,
           message,
           timestamp: DateUtils.getDateStringWithFormat(),
-          path: request.url
-        }
+          path: request.url,
+        },
       } as ApiErrorType);
     }
   }
 
-  private getMessage(exception: HttpBaseException, status: string | number): string[] {
+  private getMessage(
+    exception: HttpBaseException,
+    status: string | number,
+  ): string[] {
     const defaultError = DefaultErrorMessage[String(status)];
     if (defaultError) {
       return [defaultError];
@@ -45,7 +60,10 @@ export class ExceptionHandlerFilter implements AppExceptionFilter {
 
     if (exception instanceof ZodError) {
       return exception.issues.map((issue: ZodIssue) => {
-        const path = (issue as ZodUnrecognizedKeysIssue)?.keys?.join('.') || issue?.path?.join('.') || 'key';
+        const path =
+          (issue as ZodUnrecognizedKeysIssue)?.keys?.join('.') ||
+          issue?.path?.join('.') ||
+          'key';
 
         const idArrayError = new RegExp(/^\d./).exec(path);
         if (idArrayError?.length) {

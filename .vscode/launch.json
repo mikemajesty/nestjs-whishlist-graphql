@@ -5,6 +5,7 @@
       "name": "Debug: App",
       "type": "node",
       "request": "launch",
+      "runtimeVersion": "20.9.0",
       "restart": true,
       "skipFiles": [
         "<node_internals>/**"

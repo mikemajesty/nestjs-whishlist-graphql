@@ -1,13 +1,26 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
 
-import { Injectable, InternalServerErrorException, Scope } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Scope,
+} from '@nestjs/common';
 import { blue, gray, green, isColorSupported } from 'colorette';
-import { LevelWithSilent, LogDescriptor, Logger, multistream, pino } from 'pino';
+import {
+  LevelWithSilent,
+  LogDescriptor,
+  Logger,
+  multistream,
+  pino,
+} from 'pino';
 import { HttpLogger, Options, pinoHttp } from 'pino-http';
 import pinoPretty, { PrettyOptions } from 'pino-pretty';
 
 import { DateUtils } from '@/utils/date';
-import { ApiBadRequestException, HttpBaseException } from '@/utils/exceptions/http';
+import {
+  ApiBadRequestException,
+  HttpBaseException,
+} from '@/utils/exceptions/http';
 import { UUIDUtils } from '@/utils/uuid';
 
 import { ILoggerAdapter } from './adapter';
@@ -22,14 +35,14 @@ export class LoggerService implements ILoggerAdapter {
   async connect<T = LevelWithSilent>(logLevel: T): Promise<void> {
     const pinoLogger = pino(
       {
-        level: [logLevel, 'trace']?.find(Boolean)?.toString()
+        level: [logLevel, 'trace']?.find(Boolean)?.toString(),
       },
       multistream([
         {
           level: 'trace',
-          stream: pinoPretty(this.getPinoConfig())
-        }
-      ])
+          stream: pinoPretty(this.getPinoConfig()),
+        },
+      ]),
     );
     this.logger = pinoHttp(this.getPinoHttpConfig(pinoLogger));
   }
@@ -66,11 +79,15 @@ export class LoggerService implements ILoggerAdapter {
 
     const response =
       error instanceof HttpBaseException
-        ? { statusCode: error.statusCode, message: error?.message, ...error?.parameters }
+        ? {
+            statusCode: error.statusCode,
+            message: error?.message,
+            ...error?.parameters,
+          }
         : errorResponse?.value();
 
     const type = {
-      Error: HttpBaseException.name
+      Error: HttpBaseException.name,
     }[error?.name];
 
     const messages = [message, response?.message, error.message].find(Boolean);
@@ -79,7 +96,10 @@ export class LoggerService implements ILoggerAdapter {
       Object.assign(error, { parameters: undefined });
     }
 
-    const typeError = [type, error?.name === 'ZodError' ? ApiBadRequestException.name : error?.name].find(Boolean);
+    const typeError = [
+      type,
+      error?.name === 'ZodError' ? ApiBadRequestException.name : error?.name,
+    ].find(Boolean);
     this.logger.logger.error(
       {
         ...response,
@@ -90,9 +110,9 @@ export class LoggerService implements ILoggerAdapter {
         application: this.app,
         stack: error.stack?.replace(/\n/g, ''),
         ...error?.parameters,
-        message: typeof messages === 'string' ? [messages] : messages
+        message: typeof messages === 'string' ? [messages] : messages,
       },
-      typeError
+      typeError,
     );
   }
 
@@ -100,9 +120,12 @@ export class LoggerService implements ILoggerAdapter {
     const messages = [error.message, message].find(Boolean);
 
     const type = {
-      Error: HttpBaseException.name
+      Error: HttpBaseException.name,
     }[error?.name];
-    const typeError = [type, error?.name === 'ZodError' ? ApiBadRequestException.name : error?.name].find(Boolean);
+    const typeError = [
+      type,
+      error?.name === 'ZodError' ? ApiBadRequestException.name : error?.name,
+    ].find(Boolean);
 
     this.logger.logger.fatal(
       {
@@ -112,9 +135,9 @@ export class LoggerService implements ILoggerAdapter {
         traceid: this.getTraceId(error),
         createdAt: DateUtils.getISODateString(),
         application: this.app,
-        stack: error.stack?.replace(/\n/g, '')
+        stack: error.stack?.replace(/\n/g, ''),
       },
-      typeError
+      typeError,
     );
     process.exit(1);
   }
@@ -135,8 +158,8 @@ export class LoggerService implements ILoggerAdapter {
       customPrettifiers: {
         time: () => {
           return `[${DateUtils.getDateStringWithFormat()}]`;
-        }
-      }
+        },
+      },
     };
   }
 
@@ -147,7 +170,11 @@ export class LoggerService implements ILoggerAdapter {
       customSuccessMessage: (req: IncomingMessage, res: ServerResponse) => {
         return `request ${res.statusCode >= ApiBadRequestException.STATUS ? 'error' : 'success'} with status code: ${res.statusCode}`;
       },
-      customErrorMessage: (req: IncomingMessage, res: ServerResponse, error: Error) => {
+      customErrorMessage: (
+        req: IncomingMessage,
+        res: ServerResponse,
+        error: Error,
+      ) => {
         return `request ${error.name} with status code: ${res.statusCode} `;
       },
       customAttributeKeys: {
@@ -155,12 +182,12 @@ export class LoggerService implements ILoggerAdapter {
         res: 'response',
         err: 'error',
         responseTime: 'timeTaken',
-        reqId: 'traceid'
+        reqId: 'traceid',
       },
       serializers: {
         err: () => false,
         req: pino.stdSerializers.req,
-        res: pino.stdSerializers.res
+        res: pino.stdSerializers.res,
       },
       customProps: (req: IncomingMessage): object => {
         const request = req as unknown as { context: string; protocol: string };
@@ -174,7 +201,7 @@ export class LoggerService implements ILoggerAdapter {
           traceid,
           application: this.app,
           context,
-          createdAt: DateUtils.getISODateString()
+          createdAt: DateUtils.getISODateString(),
         });
 
         return {
@@ -182,10 +209,14 @@ export class LoggerService implements ILoggerAdapter {
           application: this.app,
           context,
           path,
-          createdAt: DateUtils.getISODateString()
+          createdAt: DateUtils.getISODateString(),
         };
       },
-      customLogLevel: (req: IncomingMessage, res: ServerResponse, error?: Error): pino.LevelWithSilent => {
+      customLogLevel: (
+        req: IncomingMessage,
+        res: ServerResponse,
+        error?: Error,
+      ): pino.LevelWithSilent => {
         if ([res.statusCode >= 400, error].some(Boolean)) {
           return 'error';
         }
@@ -195,7 +226,7 @@ export class LoggerService implements ILoggerAdapter {
         }
 
         return 'info';
-      }
+      },
     };
   }
 
@@ -205,29 +236,35 @@ export class LoggerService implements ILoggerAdapter {
     return [
       {
         conditional: typeof error === 'string',
-        value: () => new InternalServerErrorException(error).getResponse()
+        value: () => new InternalServerErrorException(error).getResponse(),
       },
       {
         conditional: isFunction && typeof error.getResponse() === 'string',
         value: () =>
           new HttpBaseException(
             error.getResponse() as string,
-            [error.getStatus(), error['status']].find(Boolean)
-          ).getResponse()
+            [error.getStatus(), error['status']].find(Boolean),
+          ).getResponse(),
       },
       {
         conditional: isFunction && typeof error.getResponse() === 'object',
-        value: () => error?.getResponse()
+        value: () => error?.getResponse(),
       },
       {
-        conditional: [error?.name === Error.name, error?.name == TypeError.name].some(Boolean),
-        value: () => new InternalServerErrorException(error.message).getResponse()
-      }
+        conditional: [
+          error?.name === Error.name,
+          error?.name == TypeError.name,
+        ].some(Boolean),
+        value: () =>
+          new InternalServerErrorException(error.message).getResponse(),
+      },
     ].find((c) => c.conditional);
   }
 
   private getTraceId(error: string | { traceid: string }): string {
     if (typeof error === 'string') return UUIDUtils.create();
-    return [error.traceid, this.logger.logger.bindings()?.traceid].find(Boolean);
+    return [error.traceid, this.logger.logger.bindings()?.traceid].find(
+      Boolean,
+    );
   }
 }

@@ -13,7 +13,7 @@ export type WishlistDocument = Document & WishlistEntity;
 @Schema({
   collection: 'wishlists',
   autoIndex: true,
-  timestamps: true
+  timestamps: true,
 })
 @ObjectType({ description: 'wishlists' })
 export class Wishlist {
@@ -23,7 +23,7 @@ export class Wishlist {
 
   @Field({ nullable: true })
   @Prop({ required: true, type: String })
-  name!: string
+  name!: string;
 
   @Field(() => User, { nullable: true })
   @Prop({ required: true, type: SchemaType.Types.Mixed })
@@ -40,8 +40,8 @@ export class Wishlist {
 
 const WishlistSchema = SchemaFactory.createForClass(Wishlist);
 
-WishlistSchema.index({ "client.password": 1, "client.name": 1 });
-WishlistSchema.index({ "products.name": 1 });
+WishlistSchema.index({ 'client.password': 1, 'client.name': 1 });
+WishlistSchema.index({ 'products.name': 1 });
 
 WishlistSchema.plugin(paginate);
 

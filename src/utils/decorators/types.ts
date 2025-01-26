@@ -1,6 +1,6 @@
 export enum SearchTypeEnum {
   'like',
-  'equal'
+  'equal',
 }
 
 export type AllowedFilter<T> = {

@@ -5,29 +5,40 @@ import { IUsecase } from '@/utils/usecase';
 
 import { ApiNotFoundException } from '@/utils/exceptions/http';
 import { ProductEntity } from '../entity/product';
+import { UserEntity } from '../entity/user';
 import { WishlistEntity, WishlistEntitySchema } from '../entity/wishlist';
 import { IWishlistRepository } from '../repository/wishlist';
 
-export const WishlistRemoveInputSchema = WishlistEntitySchema.pick({ user: true }).merge(z.object({ productName: z.string().transform(n => n.toUpperCase()) }));
+export const WishlistRemoveInputSchema = WishlistEntitySchema.pick({
+  user: true,
+}).merge(
+  z.object({ productName: z.string().transform((n) => n.toUpperCase()) }),
+);
 
 export class WishlistRemoveUsecase implements IUsecase {
-
   constructor(private readonly repository: IWishlistRepository) {}
 
   @ValidateSchema(WishlistRemoveInputSchema)
   async execute(input: WishlistRemoveInput): Promise<WishlistRemoveOutput> {
-    const wishlist = await this.repository.findOne({ user: { name: input.user?.name } })
+    const wishlist = await this.repository.findOne({
+      user: { name: (input.user as UserEntity).name },
+    });
     if (!wishlist) {
-      throw new ApiNotFoundException(`wishlist from user: ${input.user?.name} not found.`)
+      throw new ApiNotFoundException(
+        `wishlist from user: ${(input.user as UserEntity).name} not found.`,
+      );
     }
 
-    const entity = new WishlistEntity(wishlist)
-    entity.removeProduct(new ProductEntity({ name: input.productName }))
+    const entity = new WishlistEntity(wishlist);
+    entity.removeProduct(new ProductEntity({ name: input.productName }));
 
-    await this.repository.updateOne({ id: wishlist.id }, entity)
+    await this.repository.updateOne({ id: wishlist.id }, entity);
 
-    const model = await this.repository.findOneWithExcludeFields({ id: entity.id }, ['user']) as WishlistEntity
-    return new WishlistEntity(model)
+    const model = (await this.repository.findOneWithExcludeFields(
+      { id: entity.id },
+      ['user'],
+    )) as WishlistEntity;
+    return new WishlistEntity(model);
   }
 }
 

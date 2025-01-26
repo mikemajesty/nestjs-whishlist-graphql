@@ -14,5 +14,5 @@ export const DefaultErrorMessage: { [key: string]: string } = {
   503: 'Service Unavailable',
   504: 'Gateway Timeout',
   507: 'Insufficient Storage',
-  508: 'Loop Detected'
+  508: 'Loop Detected',
 };

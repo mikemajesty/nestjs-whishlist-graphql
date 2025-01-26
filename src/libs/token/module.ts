@@ -11,9 +11,9 @@ import { TokenService } from './service';
     {
       provide: ITokenAdapter,
       useFactory: (secret: ISecretsAdapter) => new TokenService(secret),
-      inject: [ISecretsAdapter]
-    }
+      inject: [ISecretsAdapter],
+    },
   ],
-  exports: [ITokenAdapter]
+  exports: [ITokenAdapter],
 })
 export class TokenLibModule {}

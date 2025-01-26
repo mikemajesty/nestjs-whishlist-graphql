@@ -1,14 +1,26 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ZodError } from 'zod';
 
-import { ApiBadRequestException, ApiInternalServerException, ApiTimeoutException } from '@/utils/exceptions/http';
+import {
+  ApiBadRequestException,
+  ApiInternalServerException,
+  ApiTimeoutException,
+} from '@/utils/exceptions/http';
 
 @Injectable()
 export class ExceptionHandlerInterceptor implements NestInterceptor {
-  intercept(executionContext: ExecutionContext, next: CallHandler): Observable<unknown> {
+  intercept(
+    executionContext: ExecutionContext,
+    next: CallHandler,
+  ): Observable<unknown> {
     return next.handle().pipe(
       catchError((error) => {
         if (executionContext.getType() === 'http') {
@@ -24,15 +36,16 @@ export class ExceptionHandlerInterceptor implements NestInterceptor {
             const context = `${executionContext.getClass().name}/${executionContext.getHandler().name}`;
             error.context = context;
           }
-
         }
         throw error;
-      })
+      }),
     );
   }
 
   private getStatusCode(
-    error: ZodError | AxiosError<{ code: string | number; error: { code: string | number } }>
+    error:
+      | ZodError
+      | AxiosError<{ code: string | number; error: { code: string | number } }>,
   ): number {
     if (error instanceof ZodError) {
       return ApiBadRequestException.STATUS;
@@ -47,7 +60,7 @@ export class ExceptionHandlerInterceptor implements NestInterceptor {
       error?.response?.status,
       error?.response?.data?.code,
       error?.response?.data?.error?.code,
-      ApiInternalServerException.STATUS
+      ApiInternalServerException.STATUS,
     ].find(Boolean) as number;
   }
 }

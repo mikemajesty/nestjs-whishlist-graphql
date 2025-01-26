@@ -18,7 +18,7 @@ import { AppModule } from './module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
-    cors: true
+    cors: true,
   });
 
   const loggerService = app.get(ILoggerAdapter);
@@ -31,8 +31,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api', {
     exclude: [
       { path: 'health', method: RequestMethod.GET },
-      { path: '/', method: RequestMethod.GET }
-    ]
+      { path: '/', method: RequestMethod.GET },
+    ],
   });
 
   app.use(
@@ -42,10 +42,10 @@ async function bootstrap() {
           defaultSrc: [`'self'`],
           styleSrc: [`'self'`, `'unsafe-inline'`],
           imgSrc: [`'self'`, 'data:', 'blob:', 'validator.swagger.io'],
-          scriptSrc: [`'self'`, `https: 'unsafe-inline'`]
-        }
-      }
-    })
+          scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+        },
+      },
+    }),
   );
 
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -62,7 +62,7 @@ async function bootstrap() {
     MONGO: { MONGO_URL },
     PORT,
     HOST,
-    IS_PRODUCTION
+    IS_PRODUCTION,
   } = app.get(ISecretsAdapter);
 
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -92,10 +92,14 @@ async function bootstrap() {
   }
 
   await app.listen(PORT, () => {
-    loggerService.log(`🟢 ${name} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
+    loggerService.log(
+      `🟢 ${name} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`,
+    );
     if (!IS_PRODUCTION) {
       loggerService.log(`🟢 Swagger listening at ${bold(`${HOST}/docs`)} 🟢`);
-      loggerService.log(`🟢 Graphql playground listening at ${bold(`${HOST}/graphql`)} 🟢`);
+      loggerService.log(
+        `🟢 Graphql playground listening at ${bold(`${HOST}/graphql`)} 🟢`,
+      );
     }
   });
 

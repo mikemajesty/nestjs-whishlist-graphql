@@ -7,16 +7,24 @@ import { MongoUtils } from '@/utils/mongoose';
 import { AllowedFilter, SearchTypeEnum } from '../types';
 import { convertFilterValue } from '../utils';
 
-export function ConvertMongooseFilter<T>(allowedFilterList: AllowedFilter<T>[] = []) {
-  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+export function ConvertMongooseFilter<T>(
+  allowedFilterList: AllowedFilter<T>[] = [],
+) {
+  return function (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
-    descriptor.value = function (...args: { search: { [key: string]: string | string[] } }[]) {
+    descriptor.value = function (
+      ...args: { search: { [key: string]: string | string[] } }[]
+    ) {
       const input = args[0];
 
       const where: FilterQuery<IEntity> = {
         $or: [],
         $and: [],
-        deletedAt: null
+        deletedAt: null,
       };
 
       if (input?.search?.id) {
@@ -29,7 +37,9 @@ export function ConvertMongooseFilter<T>(allowedFilterList: AllowedFilter<T>[] =
       Object.keys(input.search || {}).forEach((key) => {
         const allowed = filterNameList.includes(key);
         if (!allowed)
-          throw new ApiBadRequestException(`filter ${key} not allowed, allowed list: ${filterNameList.join(', ')}`);
+          throw new ApiBadRequestException(
+            `filter ${key} not allowed, allowed list: ${filterNameList.join(', ')}`,
+          );
       });
 
       const IS_ARRAY_FILTER = 'object';
@@ -52,10 +62,10 @@ export function ConvertMongooseFilter<T>(allowedFilterList: AllowedFilter<T>[] =
                 return {
                   [field]: convertFilterValue({
                     value: filter,
-                    format: allowedFilter.format
-                  })
+                    format: allowedFilter.format,
+                  }),
                 };
-              })
+              }),
             );
           }
 
@@ -63,8 +73,8 @@ export function ConvertMongooseFilter<T>(allowedFilterList: AllowedFilter<T>[] =
             where?.$and?.push({
               [field]: convertFilterValue({
                 value: filters,
-                format: allowedFilter.format
-              })
+                format: allowedFilter.format,
+              }),
             });
           }
         }
@@ -76,10 +86,10 @@ export function ConvertMongooseFilter<T>(allowedFilterList: AllowedFilter<T>[] =
                 return {
                   [field]: {
                     $regex: filter,
-                    $options: 'i'
-                  }
+                    $options: 'i',
+                  },
                 };
-              })
+              }),
             );
           }
 
@@ -87,8 +97,8 @@ export function ConvertMongooseFilter<T>(allowedFilterList: AllowedFilter<T>[] =
             where?.$and?.push({
               [field]: {
                 $regex: MongoUtils.createRegexFilterText(filters),
-                $options: 'i'
-              }
+                $options: 'i',
+              },
             });
           }
         }

@@ -28,7 +28,7 @@ export enum DatabaseOperationEnum {
   EQUAL = 'equal',
   NOT_EQUAL = 'not_equal',
   NOT_CONTAINS = 'not_contains',
-  CONTAINS = 'contains'
+  CONTAINS = 'contains',
 }
 
 export type DatabaseOperationCommand<T> = {

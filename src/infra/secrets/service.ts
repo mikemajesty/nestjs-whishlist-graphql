@@ -29,8 +29,12 @@ export class SecretsService implements ISecretsAdapter {
     MONGO_DATABASE: this.config.get('MONGO_DATABASE'),
   };
 
-  TOKEN_EXPIRATION = this.config.get<number | string>('TOKEN_EXPIRATION') as string;
-  REFRESH_TOKEN_EXPIRATION = this.config.get<number | string>('REFRESH_TOKEN_EXPIRATION') as string;
+  TOKEN_EXPIRATION = this.config.get<number | string>(
+    'TOKEN_EXPIRATION',
+  ) as string;
+  REFRESH_TOKEN_EXPIRATION = this.config.get<number | string>(
+    'REFRESH_TOKEN_EXPIRATION',
+  ) as string;
 
   JWT_SECRET_KEY = this.config.get('JWT_SECRET_KEY');
 }

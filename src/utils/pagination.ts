@@ -8,7 +8,7 @@ const maxLimit = (limit: number) => (limit > 100 ? 100 : limit);
 export const PaginationSchema = z
   .object({
     page: z.number().or(z.string()).or(z.nan()).default(1),
-    limit: z.number().or(z.string()).or(z.nan()).default(10)
+    limit: z.number().or(z.string()).or(z.nan()).default(10),
   })
   .transform((pagination) => {
     let limit = Number(pagination.limit);
@@ -24,16 +24,16 @@ export const PaginationSchema = z
 
     return {
       page: page > 0 ? page : 1,
-      limit: limit > 0 ? maxLimit(limit) : 10
+      limit: limit > 0 ? maxLimit(limit) : 10,
     };
   })
   .refine((pagination) => Number.isInteger(pagination.page), {
     path: ['page'],
-    message: 'invalidInteger'
+    message: 'invalidInteger',
   })
   .refine((pagination) => Number.isInteger(pagination.limit), {
     path: ['limit'],
-    message: 'invalidInteger'
+    message: 'invalidInteger',
   });
 
 export class PaginationUtils {
@@ -41,10 +41,22 @@ export class PaginationUtils {
     return (input.page - 1) * input.limit;
   };
 
-  static calculateTotalPages = ({ limit, total }: { limit: number; total: number }) => {
+  static calculateTotalPages = ({
+    limit,
+    total,
+  }: {
+    limit: number;
+    total: number;
+  }) => {
     return Number(Math.ceil(total / limit));
   };
 }
 
-export type PaginationInput<T> = z.infer<typeof PaginationSchema> & SortInput & SearchInput<Partial<T>>;
-export type PaginationOutput<T> = z.infer<typeof PaginationSchema> & { total: number; docs: T[]; totalPages?: number };
+export type PaginationInput<T> = z.infer<typeof PaginationSchema> &
+  SortInput &
+  SearchInput<Partial<T>>;
+export type PaginationOutput<T> = z.infer<typeof PaginationSchema> & {
+  total: number;
+  docs: T[];
+  totalPages?: number;
+};

@@ -9,25 +9,35 @@ import { UserEntity } from '../entity/user';
 import { WishlistEntity, WishlistEntitySchema } from '../entity/wishlist';
 import { IWishlistRepository } from '../repository/wishlist';
 
-export const WishlistCreateInputSchema = WishlistEntitySchema.pick({ user: true, name: true }).merge(z.object({ product: ProductEntitySchema.pick({ name: true }) }));
+export const WishlistCreateInputSchema = WishlistEntitySchema.pick({
+  user: true,
+  name: true,
+}).merge(z.object({ product: ProductEntitySchema.pick({ name: true }) }));
 
 export class WishlistCreateUsecase implements IWishlistCreateAdapter {
   constructor(private readonly repository: IWishlistRepository) {}
 
   @ValidateSchema(WishlistCreateInputSchema)
   async execute(input: WishlistCreateInput): Promise<WishlistCreateOutput> {
-    const entity = new WishlistEntity({ id: UUIDUtils.create(), ...input, products: [new ProductEntity({ name: input.product.name })] })
+    const entity = new WishlistEntity({
+      id: UUIDUtils.create(),
+      ...input,
+      products: [new ProductEntity({ name: input.product.name })],
+    });
 
-    const user = new UserEntity(entity.user)
-    user.createPassword()
-    entity.user = user
+    const user = new UserEntity(entity.user);
+    user.createPassword();
+    entity.user = user;
 
-    await this.repository.create(entity)
-    const model = await this.repository.findOneWithExcludeFields({ id: entity.id }, ['user']) as WishlistEntity
-    return new WishlistEntity(model)
+    await this.repository.create(entity);
+    const model = (await this.repository.findOneWithExcludeFields(
+      { id: entity.id },
+      ['user'],
+    )) as WishlistEntity;
+    return new WishlistEntity(model);
   }
 }
 
-const Output = WishlistCreateInputSchema.omit({ user: true })
+export const Output = WishlistCreateInputSchema.omit({ user: true });
 export type WishlistCreateInput = z.infer<typeof Output>;
 export type WishlistCreateOutput = Omit<WishlistEntity, 'user'>;

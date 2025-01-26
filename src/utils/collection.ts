@@ -1,7 +1,10 @@
 import { ApiBadRequestException } from './exceptions/http';
 
 export class CollectionUtil {
-  static groupBy = <T>(collection: unknown[] = [], key: string): { [key: string]: T[] } => {
+  static groupBy = <T>(
+    collection: unknown[] = [],
+    key: string,
+  ): { [key: string]: T[] } => {
     if (!key.length) {
       throw new ApiBadRequestException();
     }
@@ -11,5 +14,5 @@ export class CollectionUtil {
       prev[next[key]].push(next);
       return prev;
     }, {}) as { [key: string]: [] };
-  }
+  };
 }

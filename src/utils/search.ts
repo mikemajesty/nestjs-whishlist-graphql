@@ -11,8 +11,8 @@ export const SearchHttpSchema = z
       return [!check.startsWith(':'), check.includes(':')].every(Boolean);
     },
     {
-      message: 'invalidSearchFormat'
-    }
+      message: 'invalidSearchFormat',
+    },
   )
   .refine(
     (search) => {
@@ -28,8 +28,8 @@ export const SearchHttpSchema = z
         });
     },
     {
-      message: 'searchMustBe: value'
-    }
+      message: 'searchMustBe: value',
+    },
   )
   .transform((searchString) => {
     if (!searchString) return null;
@@ -54,5 +54,5 @@ export const SearchSchema = z.object({
   search: z
     .record(z.string().trim(), z.number().or(z.string()).or(z.array(z.any())))
     .nullable()
-    .default({})
+    .default({}),
 });

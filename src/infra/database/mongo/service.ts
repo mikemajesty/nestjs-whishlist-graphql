@@ -6,7 +6,7 @@ import { ConnectionType } from '../types';
 export class MongoService implements Partial<IDataBaseAdapter> {
   getConnection<TOpt = MongooseModuleOptions>({ URI }: ConnectionType): TOpt {
     return {
-      uri: URI
+      uri: URI,
     } as TOpt;
   }
 }

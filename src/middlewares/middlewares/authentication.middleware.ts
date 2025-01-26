@@ -17,12 +17,14 @@ export class HttpAuthenticationMiddleware implements NestMiddleware {
   async use(
     request: Request & { user: UserRequest; id: string },
     response: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const tokenHeader = request.headers.authorization;
 
     if (!request.headers?.traceid) {
-      Object.assign(request.headers, { traceid: request['id'] ?? UUIDUtils.create() });
+      Object.assign(request.headers, {
+        traceid: request['id'] ?? UUIDUtils.create(),
+      });
     }
 
     if (!tokenHeader) {
@@ -36,12 +38,13 @@ export class HttpAuthenticationMiddleware implements NestMiddleware {
 
     request.id = request.headers.traceid as string;
 
-
-    const userDecoded = (await this.tokenService.verify<UserRequest>(token).catch((error: { status: number }) => {
-      error.status = ApiUnauthorizedException.STATUS;
-      this.loggerService.logger(request, response);
-      next(error);
-    })) as UserRequest;
+    const userDecoded = (await this.tokenService
+      .verify<UserRequest>(token)
+      .catch((error: { status: number }) => {
+        error.status = ApiUnauthorizedException.STATUS;
+        this.loggerService.logger(request, response);
+        next(error);
+      })) as UserRequest;
 
     request.user = userDecoded;
 

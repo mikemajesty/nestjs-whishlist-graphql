@@ -6,13 +6,8 @@ import { LoggerModule } from './logger';
 import { SecretsModule } from './secrets';
 
 @Module({
-  imports: [
-    SecretsModule,
-    MongoDatabaseModule,
-    LoggerModule,
-    GraphqlModule
-  ],
+  imports: [SecretsModule, MongoDatabaseModule, LoggerModule, GraphqlModule],
   providers: [],
-  exports: [SecretsModule, MongoDatabaseModule, LoggerModule, GraphqlModule]
+  exports: [SecretsModule, MongoDatabaseModule, LoggerModule, GraphqlModule],
 })
 export class InfraModule {}

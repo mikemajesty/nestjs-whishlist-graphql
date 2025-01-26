@@ -1,5 +1,5 @@
-import { HttpStatus } from "@nestjs/common";
-import { GraphQLError } from "graphql";
+import { HttpStatus } from '@nestjs/common';
+import { GraphQLError } from 'graphql';
 
 class GraphQLBaseException extends GraphQLError {
   status!: number;
@@ -18,13 +18,19 @@ class GraphQLBaseException extends GraphQLError {
 export class ApiGraphqlNotFoundException extends GraphQLBaseException {
   static STATUS = HttpStatus.NOT_FOUND;
   constructor(message: string) {
-    super(message ?? ApiGraphqlNotFoundException.name, ApiGraphqlNotFoundException.STATUS);
+    super(
+      message ?? ApiGraphqlNotFoundException.name,
+      ApiGraphqlNotFoundException.STATUS,
+    );
   }
 }
 
 export class ApiGraphqlUnathorizedException extends GraphQLBaseException {
   static STATUS = HttpStatus.UNAUTHORIZED;
   constructor(message: string) {
-    super(message ?? ApiGraphqlNotFoundException.name, ApiGraphqlNotFoundException.STATUS);
+    super(
+      message ?? ApiGraphqlNotFoundException.name,
+      ApiGraphqlNotFoundException.STATUS,
+    );
   }
 }

@@ -3,9 +3,8 @@ import { z } from 'zod';
 import { CryptoUtils } from '@/utils/crypto';
 import { BaseEntity } from '@/utils/entity';
 
-
 const ID = z.string().uuid().optional();
-const Name = z.string().transform(n => n.toUpperCase());
+const Name = z.string().transform((n) => n.toUpperCase());
 const Password = z.string();
 const CreatedAt = z.date().nullish();
 const UpdatedAt = z.date().nullish();
@@ -17,7 +16,7 @@ export const UserEntitySchema = z.object({
   password: Password.optional(),
   createdAt: CreatedAt,
   updatedAt: UpdatedAt,
-  deletedAt: DeletedAt
+  deletedAt: DeletedAt,
 });
 
 type User = z.infer<typeof UserEntitySchema>;

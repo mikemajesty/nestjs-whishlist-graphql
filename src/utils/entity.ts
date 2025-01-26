@@ -4,7 +4,9 @@ import { DateUtils } from './date';
 import { UUIDUtils } from './uuid';
 
 export const withID = (entity: { _id?: string; id?: string }) => {
-  Object.assign(entity, { id: [entity?.id, entity?._id, UUIDUtils.create()].find(Boolean) });
+  Object.assign(entity, {
+    id: [entity?.id, entity?._id, UUIDUtils.create()].find(Boolean),
+  });
   return entity;
 };
 

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export enum SortEnum {
   asc = 1,
-  desc = -1
+  desc = -1,
 }
 
 export const SortHttpSchema = z
@@ -14,8 +14,8 @@ export const SortHttpSchema = z
       return [!check.startsWith(':'), check.includes(':')].every(Boolean);
     },
     {
-      message: 'invalidSortFormat'
-    }
+      message: 'invalidSortFormat',
+    },
   )
   .refine(
     (sort) => {
@@ -29,8 +29,8 @@ export const SortHttpSchema = z
         });
     },
     {
-      message: 'invalidSortOrderMustBe: asc, desc'
-    }
+      message: 'invalidSortOrderMustBe: asc, desc',
+    },
   )
   .transform((sort) => {
     const sortDefault = sort || 'createdAt:desc';
@@ -40,16 +40,24 @@ export const SortHttpSchema = z
         .split(',')
         .map((s) => {
           const [field, order] = s.split(':');
-          const sorted = [field.trim(), SortEnum[(order.trim().toLowerCase() || 'asc') as keyof typeof SortEnum]];
+          const sorted = [
+            field.trim(),
+            SortEnum[
+              (order.trim().toLowerCase() || 'asc') as keyof typeof SortEnum
+            ],
+          ];
           return sorted;
-        })
+        }),
     );
 
     return order;
   });
 
 export const SortSchema = z.object({
-  sort: z.record(z.string().trim().min(1), z.nativeEnum(SortEnum)).nullable().default({})
+  sort: z
+    .record(z.string().trim().min(1), z.nativeEnum(SortEnum))
+    .nullable()
+    .default({}),
 });
 
 export type SortInput = z.infer<typeof SortSchema>;

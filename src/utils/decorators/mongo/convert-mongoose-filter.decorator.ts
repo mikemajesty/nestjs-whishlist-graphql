@@ -3,7 +3,11 @@ import { FilterQuery, RootFilterQuery } from 'mongoose';
 import { IEntity } from '@/utils/entity';
 
 export function ConvertMongoFilterToBaseRepository() {
-  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) => {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: { id?: string }[]) {
       const input: RootFilterQuery<IEntity> = args[0];
@@ -28,13 +32,15 @@ export function ConvertMongoFilterToBaseRepository() {
 }
 
 const convertObjectFilterToMongoFilter = (input: FilterQuery<IEntity>) => {
-  const filterFormated: { [key: string]: unknown; } = {};
+  const filterFormated: { [key: string]: unknown } = {};
   for (const key in input) {
     if (input[key] && typeof input[key] === 'object') {
-      filterFormated[`${key}.${Object.keys(input[key])[0]}`] = Object.values(input[key])[0];
+      filterFormated[`${key}.${Object.keys(input[key])[0]}`] = Object.values(
+        input[key],
+      )[0];
       continue;
     }
     filterFormated[key] = input[key];
   }
   return filterFormated;
-}
+};

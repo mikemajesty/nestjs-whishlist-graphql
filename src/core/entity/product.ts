@@ -2,9 +2,12 @@ import { z } from 'zod';
 
 import { BaseEntity } from '@/utils/entity';
 
-
 const ID = z.string().uuid().optional();
-const Name = z.string().min(1).trim().transform(n => n.toUpperCase());
+const Name = z
+  .string()
+  .min(1)
+  .trim()
+  .transform((n) => n.toUpperCase());
 const Description = z.string().optional();
 const Price = z.number().optional();
 const Stock = z.number().optional();
@@ -22,7 +25,7 @@ export const ProductEntitySchema = z.object({
   partner: Partner,
   createdAt: CreatedAt,
   updatedAt: UpdatedAt,
-  deletedAt: DeletedAt
+  deletedAt: DeletedAt,
 });
 
 type Product = z.infer<typeof ProductEntitySchema>;
@@ -30,13 +33,13 @@ type Product = z.infer<typeof ProductEntitySchema>;
 export class ProductEntity extends BaseEntity<ProductEntity>() {
   name!: string;
 
-  description?: string
+  description?: string;
 
-  price?: number
+  price?: number;
 
-  stock?: number
+  stock?: number;
 
-  partner?: string
+  partner?: string;
 
   constructor(entity: Product) {
     super(ProductEntitySchema);
@@ -47,9 +50,9 @@ export class ProductEntity extends BaseEntity<ProductEntity>() {
    * @description essa função foi adicionada para adicionar mocks e facilitar a criação do produto
    */
   addMock() {
-    this.description = "descrição"
-    this.partner = "magalu"
-    this.price = 18.90
-    this.stock = 12
+    this.description = 'descrição';
+    this.partner = 'magalu';
+    this.price = 18.9;
+    this.stock = 12;
   }
 }

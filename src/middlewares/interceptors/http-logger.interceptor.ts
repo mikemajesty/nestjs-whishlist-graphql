@@ -1,4 +1,9 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 import { ILoggerAdapter } from '@/infra/logger';
@@ -10,7 +15,10 @@ import { Response } from 'express';
 export class HttpLoggerInterceptor implements NestInterceptor {
   constructor(private readonly logger: ILoggerAdapter) {}
 
-  intercept(executionContext: ExecutionContext, next: CallHandler): Observable<unknown> {
+  intercept(
+    executionContext: ExecutionContext,
+    next: CallHandler,
+  ): Observable<unknown> {
     if (executionContext.getType() === 'http') {
       const context = `${executionContext.getClass().name}/${executionContext.getHandler().name}`;
 
@@ -28,11 +36,11 @@ export class HttpLoggerInterceptor implements NestInterceptor {
     if (executionContext.getType<GqlContextType>() === 'graphql') {
       const gqlContext = GqlExecutionContext.create(executionContext);
       const res: Response = gqlContext.getContext().res;
-      const requestId = UUIDUtils.create()
+      const requestId = UUIDUtils.create();
 
       res.set('traceId', requestId);
       this.logger.setGlobalParameters({ traceid: requestId });
     }
-    return next.handle()
+    return next.handle();
   }
 }

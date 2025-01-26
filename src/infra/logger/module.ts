@@ -17,9 +17,9 @@ import { LogLevelEnum } from './types';
         await logger.connect((LogLevelEnum as any)[`${LOG_LEVEL}`]);
         return logger;
       },
-      inject: [ISecretsAdapter]
-    }
+      inject: [ISecretsAdapter],
+    },
   ],
-  exports: [ILoggerAdapter]
+  exports: [ILoggerAdapter],
 })
 export class LoggerModule {}

@@ -27,7 +27,9 @@ export class MongoUtils {
     return ((page || 1) - 1) * Number(limit || 10);
   };
 
-  static diacriticSensitiveRegex = (filter: string | string[]): string | string[] => {
+  static diacriticSensitiveRegex = (
+    filter: string | string[],
+  ): string | string[] => {
     if (typeof filter === 'string') {
       return filter
         .replace(/a/g, '[a,á,à,ä,â,ã]')
@@ -53,12 +55,16 @@ export class MongoUtils {
     return filter;
   };
 
-  static createRegexFilterText = (text: string | string[]): string | string[] => {
+  static createRegexFilterText = (
+    text: string | string[],
+  ): string | string[] => {
     return this.diacriticSensitiveRegex(this.skipParentheses(text));
   };
 }
 
-export type MongoRepositoryModelSessionType<T> = T & { connection?: Connection };
+export type MongoRepositoryModelSessionType<T> = T & {
+  connection?: Connection;
+};
 
 export type MongoRepositorySession = {
   abortTransaction: () => Promise<{ [key: string]: unknown }>;
