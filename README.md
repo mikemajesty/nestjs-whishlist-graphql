@@ -39,7 +39,7 @@ A arquitetura foi desenvolvida com base nos princípios do Clean Architecture, e
 
 --- Notas da documentação ---
 
- Eu desenvolvi todos os endpoints requeridos em **HTTP**, documentação em
+ #### Eu desenvolvi todos os endpoints requeridos em **HTTP**
  - http://localhost:3000/docs#/
  - para acessar sera disponibilizado dois tokens para teste, o mesmo deve ficar no Header no padão Bearer Authentication, ou no [Authorize] do Swagger
  - **user Magalu:**
@@ -52,7 +52,8 @@ A arquitetura foi desenvolvida com base nos princípios do Clean Architecture, e
     ```
 ---
 
-#### Foi desenvolvido os dois endpoints de consulta em Graphql, documentação em: 
+#### Foi desenvolvido os dois endpoints de consulta em Graphql: 
+
  - http://localhost:3000/graphql
  - para acessar sera disponibilizado dois tokens para teste
  - **user Magalu:** 
