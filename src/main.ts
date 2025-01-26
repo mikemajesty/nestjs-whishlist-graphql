@@ -12,7 +12,9 @@ import { ISecretsAdapter } from '@/infra/secrets';
 import { ExceptionHandlerFilter } from '@/middlewares/filters/exception-handler.filter';
 
 import { description, name, version } from '../package.json';
+import { UserEntity } from './core/entity/user';
 import { ErrorType } from './infra/logger';
+import { ITokenAdapter } from './libs/token';
 import { AppModule } from './module';
 
 async function bootstrap() {
@@ -91,6 +93,12 @@ async function bootstrap() {
     SwaggerModule.setup('docs', app, document);
   }
 
+  const token = app.get(ITokenAdapter)
+
+  const magalu = token.sign({ name: "Magalu", password: "****" } as UserEntity)
+  console.log("magalu", magalu.token);
+  const Joaozinho = token.sign({ name: "Joãozinho", password: "****" } as UserEntity)
+  console.log("Joaozinho", Joaozinho.token);
   await app.listen(PORT, () => {
     loggerService.log(
       `🟢 ${name} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`,

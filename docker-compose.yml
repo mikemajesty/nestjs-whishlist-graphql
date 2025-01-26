@@ -1,26 +1,37 @@
 version: '3.1'
 
 services:
-  withlist-mongo-db:
-    container_name: withlist-mongo-db
+  wishlist-service:
+    container_name: wishlist-service
+    depends_on:
+      - wishlist-mongo-db
+    networks:
+      - mongo-network-wishlist
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - 3000:3000
+  wishlist-mongo-db:
+    container_name: wishlist-mongo-db
     image: mongo
     restart: always
     volumes:
-      - withlist-mongo:/data/db
+      - wishlist-mongo:/data/db
       - .docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
-      - mongo-network-withlist
+      - mongo-network-wishlist
     ports:
       - '27017:27017'
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
-      - MONGO_INITDB_DATABASE=withlist-mongo-db
-    logging:
-      driver: "none"
+    env_file:
+      - .env
 
 volumes:
-  withlist-mongo:
+  wishlist-mongo:
 networks:
-  mongo-network-withlist:
+  mongo-network-wishlist:
     driver: bridge

@@ -111,7 +111,7 @@ export class WishlistController {
     });
     if (wishlistExists) {
       return this.updateWishlistUsecase.execute({
-        ...body,
+        name: body?.product?.name,
         user: user,
       } as WishlistUpdateInput);
     }

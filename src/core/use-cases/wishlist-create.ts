@@ -21,7 +21,7 @@ export class WishlistCreateUsecase implements IWishlistCreateAdapter {
   async execute(input: WishlistCreateInput): Promise<WishlistCreateOutput> {
     const entity = new WishlistEntity({
       id: UUIDUtils.create(),
-      ...input,
+      name: input.name,
       products: [new ProductEntity({ name: input.product.name })],
     });
 

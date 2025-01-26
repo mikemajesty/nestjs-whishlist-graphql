@@ -1,12 +1,10 @@
-db.createUser(
-  {
-    user: "admin",
-    pwd: "admin",
-    roles: [
-      {
-        role: "readWrite",
-        db: "withlist-mongo-db"
-      }
-    ]
-  }
-);
+db.createUser({
+  user: 'admin',
+  pwd: 'admin',
+  roles: [
+    {
+      role: "readWrite",
+      db: "withlist-db"
+    }
+  ]
+})
