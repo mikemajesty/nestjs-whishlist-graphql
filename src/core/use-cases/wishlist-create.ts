@@ -22,6 +22,7 @@ export class WishlistCreateUsecase implements IWishlistCreateAdapter {
     const entity = new WishlistEntity({
       id: UUIDUtils.create(),
       name: input.name,
+      user: input.user,
       products: [new ProductEntity({ name: input.product.name })],
     });
 
@@ -38,6 +39,5 @@ export class WishlistCreateUsecase implements IWishlistCreateAdapter {
   }
 }
 
-export const Output = WishlistCreateInputSchema.omit({ user: true });
-export type WishlistCreateInput = z.infer<typeof Output>;
+export type WishlistCreateInput = z.infer<typeof WishlistCreateInputSchema>;
 export type WishlistCreateOutput = Omit<WishlistEntity, 'user'>;
