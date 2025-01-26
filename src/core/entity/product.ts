@@ -4,7 +4,7 @@ import { BaseEntity } from '@/utils/entity';
 
 
 const ID = z.string().uuid().optional();
-const Name = z.string().transform(n => n.toUpperCase());
+const Name = z.string().min(1).trim().transform(n => n.toUpperCase());
 const Description = z.string().optional();
 const Price = z.number().optional();
 const Stock = z.number().optional();

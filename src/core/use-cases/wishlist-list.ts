@@ -19,7 +19,9 @@ export class WishlistListUsecase implements IUsecase {
     if (!model) {
       throw new ApiNotFoundException(`wishlist from user: ${input.user?.name} not found.`)
     }
-    return new WishlistEntity(model)
+    const entity = new WishlistEntity(model)
+
+    return entity
   }
 }
 

@@ -93,7 +93,10 @@ async function bootstrap() {
 
   await app.listen(PORT, () => {
     loggerService.log(`🟢 ${name} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
-    if (!IS_PRODUCTION) loggerService.log(`🟢 Swagger listening at ${bold(`${HOST}/docs`)} 🟢`);
+    if (!IS_PRODUCTION) {
+      loggerService.log(`🟢 Swagger listening at ${bold(`${HOST}/docs`)} 🟢`);
+      loggerService.log(`🟢 Graphql playground listening at ${bold(`${HOST}/graphql`)} 🟢`);
+    }
   });
 
   loggerService.log(`🔵 Mongo listening at ${bold(MONGO_URL)}`);

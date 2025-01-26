@@ -9,7 +9,7 @@ import { UUIDUtils } from '@/utils/uuid';
 import { ApiUnauthorizedException } from '../../utils/exceptions/http';
 
 @Injectable()
-export class AuthenticationMiddleware implements NestMiddleware {
+export class HttpAuthenticationMiddleware implements NestMiddleware {
   constructor(
     private readonly tokenService: ITokenAdapter,
     private readonly loggerService: ILoggerAdapter,

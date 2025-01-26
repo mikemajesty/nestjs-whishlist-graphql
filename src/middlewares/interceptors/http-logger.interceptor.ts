@@ -30,7 +30,7 @@ export class HttpLoggerInterceptor implements NestInterceptor {
       const res: Response = gqlContext.getContext().res;
       const requestId = UUIDUtils.create()
 
-      res.set('requestId', requestId);
+      res.set('traceId', requestId);
       this.logger.setGlobalParameters({ traceid: requestId });
     }
     return next.handle()

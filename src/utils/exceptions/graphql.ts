@@ -21,3 +21,10 @@ export class ApiGraphqlNotFoundException extends GraphQLBaseException {
     super(message ?? ApiGraphqlNotFoundException.name, ApiGraphqlNotFoundException.STATUS);
   }
 }
+
+export class ApiGraphqlUnathorizedException extends GraphQLBaseException {
+  static STATUS = HttpStatus.UNAUTHORIZED;
+  constructor(message: string) {
+    super(message ?? ApiGraphqlNotFoundException.name, ApiGraphqlNotFoundException.STATUS);
+  }
+}

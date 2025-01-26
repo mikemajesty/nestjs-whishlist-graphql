@@ -8,13 +8,14 @@ import { ConnectionName } from '@/infra/database/enum';
 import { Wishlist, WishlistDocument, WishlistSchema } from '@/infra/database/mongo/schemas/wishlist';
 import { LoggerModule } from '@/infra/logger';
 import { TokenLibModule } from '@/libs/token';
-import { AuthenticationMiddleware } from '@/middlewares/middlewares';
+import { HttpAuthenticationMiddleware } from '@/middlewares/middlewares';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { getConnectionToken } from '@nestjs/mongoose';
 import mongoose, { Connection, PaginateModel, Schema } from 'mongoose';
 import { IWishlistCreateAdapter, IWishlistListAdapter, IWishlistProductExistsAdapter, IWishlistRemoveAdapter, IWishlistUpdateAdapter } from './adapter';
 import { WishlistController } from './controller';
 import { WishlistRepository } from './repository';
+import { WishlistResolver } from './resolver';
 
 
 @Module({
@@ -69,12 +70,13 @@ import { WishlistRepository } from './repository';
         return new WishlistProductExistsUsecase(repository)
       },
       inject: [IWishlistRepository]
-    }
+    },
+    WishlistResolver
   ],
   exports: [IWishlistRepository, IWishlistUpdateAdapter, IWishlistRemoveAdapter, IWishlistListAdapter, IWishlistProductExistsAdapter]
 })
 export class WishlistModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthenticationMiddleware).forRoutes(WishlistController);
+    consumer.apply(HttpAuthenticationMiddleware).forRoutes(WishlistController);
   }
 }
