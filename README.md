@@ -127,7 +127,7 @@ Durante o desenvolvimento, tomei decisões intencionais para facilitar os testes
     * **modules => repository**: Implementação do repositorio
     * **modules => resolver**: Controlador Graphql
     * **modules => swagger**: Documentação do Swagger
-
+---
 -- Skeleton
 
 ```
