@@ -2,10 +2,12 @@ FROM node:20.9.0-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY . ./
 
-RUN yarn install
+RUN npm install -g @nestjs/cli
+RUN npm i --force
+RUN npm run build
 
-COPY . .
+RUN ls ./node_modules -al
 
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "dist/src/main.js" ]

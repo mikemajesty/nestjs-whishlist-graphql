@@ -14,9 +14,12 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ".:/app"
+      - "/app/node_modules"
     ports:
       - 3000:3000
   wishlist-mongo-db:
+    logging:
+      driver: "none"
     container_name: wishlist-mongo-db
     image: mongo
     restart: always
