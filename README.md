@@ -115,7 +115,7 @@ Durante o desenvolvimento, tomei decisões intencionais para facilitar os testes
 
 ## Arquitetura
   * **core**: A camada reponsavel pelas orquestração e aplicação das regras de negócio 
-    * **core => entity**: Camada responsavel por executar regras de negocio associada com aos seus respectivos campos.
+    * **core => entity**: Camada responsavel por executar regras de negocio associada com os seus respectivos campos.
     * **core => repository**: Camada responsavel por abstrair a implementação do repositorio
     * **core => use-cases**: Camada responsavel por orquestrar as regras de negocio e as regras da aplicação.
   ---
