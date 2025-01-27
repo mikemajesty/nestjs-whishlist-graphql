@@ -104,7 +104,7 @@ Durante o desenvolvimento, tomei decisões intencionais para facilitar os testes
  - Eu optei por não salvar o user e o produtos em collections diferentes para facilitar o desenvolvimento.
 
 #### Autenticação
- - Não segui as melhores práticas em relação a criação e regras da expiração do **Token**. Ele foi criado exclusivamente para associar a wishlist ao cliente, e essa associação foi feita com base no nome, embora saiba que essa abordagem não é uma abordagem correta. Essa decisão foi tomada para simplificar o desenvolvimento. Além disso, não me preocupei em implementar um sistema de login.
+ - Não segui as melhores práticas em relação a criação e regras de expiração do **Token**. Ele foi criado exclusivamente para associar a wishlist ao cliente, e essa associação foi feita com base no nome, embora saiba que essa abordagem não é uma abordagem correta. Essa decisão foi tomada para simplificar o desenvolvimento. Além disso, não me preocupei em implementar um sistema de login.
 
 #### Caso de uso [Adicionar um produto na Wishlist do cliente]
 * Sempre que um produto é adicionado à wishlist, incluo alguns campos fixos no produto. Essa abordagem foi adotada para melhorar a exibição e facilitar os testes com **GraphQL**.
