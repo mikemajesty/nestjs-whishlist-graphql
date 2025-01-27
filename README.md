@@ -37,7 +37,7 @@ A arquitetura foi desenvolvida com base nos princípios do Clean Architecture, e
 
 --- Notas da documentação ---
 
- #### Eu desenvolvi todos os endpoints requeridos em **HTTP**
+ #### Eu desenvolvi todos os endpoints requeridos em **Rest**
  - http://localhost:3000/docs#/
  - para acessar sera disponibilizado dois tokens para teste, o mesmo deve ficar no Header no padão Bearer Authentication, ou no [Authorize] do Swagger
  - **user Magalu:**
